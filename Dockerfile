@@ -16,16 +16,11 @@ ENV APP_ROOT /opt/webapp
 RUN mkdir -p $APP_ROOT
 WORKDIR $APP_ROOT
 
-COPY Gemfile Gemfile.lock /tmp/
-RUN cd /tmp && bundle
-RUN gem install foreman
+COPY Gemfile $APP_ROOT
+COPY Gemfile.lock $APP_ROOT
 
-RUN npm install -g yarn
-COPY package.json yarn.lock /tmp/
-RUN cd /tmp && yarn
+RUN cd $APP_ROOT && bundle install
 
-ADD . $APP_ROOT
-RUN cp -a /tmp/node_modules $APP_ROOT
+EXPOSE  3000
+CMD ["rails", "server", "-b", "0.0.0.0"]
 
-
-RUN cd $APP_ROOT && rm -rf public/packs/* || true && bundle exec rake react_on_rails:locale && bin/webpack

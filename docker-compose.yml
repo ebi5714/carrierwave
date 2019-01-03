@@ -7,19 +7,17 @@ services:
       - public-data:/opt/webapp/public
       - tmp-data:/opt/webapp/tmp
       - log-data:/opt/webapp/log
-    command: bash -c "rm -f tmp/pids/server.pid && rake db:migrate && bundle exec unicorn -p 3000 -c config/unicorn.rb"
+    command: bash -c "rm -f tmp/pids/unicorn.pid && rake db:migrate && bundle exec unicorn -p 3000 -c config/unicorn.rb"
     depends_on:
       - db
       - redis
-    tty: true
-    stdin_open: true
     env_file: containers/rails/.env
   db:
     restart:
       always
-    image: mysql:5.7.22
+    image: mysql:5.7.24
     environment:
-      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_ROOT_PASSWORD=password
     volumes:
       - ./containers/mysql/my.cnf:/etc/mysql/my.cnf
       - db-data:/var/lib/mysql
@@ -39,11 +37,6 @@ services:
     image: redis:3.2.4-alpine
     ports:
       - 46379:6379
-  mail:
-    image: schickling/mailcatcher
-    ports:
-      - 41080:1080
-      - 41025:1025
 volumes:
   public-data:
   tmp-data:
