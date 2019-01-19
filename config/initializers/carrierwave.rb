@@ -7,7 +7,7 @@ CarrierWave.configure do |config|
   }
 
   config.fog_directory  = ENV["AWS_BUCKET"]
-  # config.fog_directory  = 'pictures-0106'
+
   config.cache_storage = :fog
 end
 
